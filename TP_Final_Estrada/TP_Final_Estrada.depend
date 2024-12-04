@@ -1,0 +1,63 @@
+# depslib dependency file v1.0
+1723391313 source:c:\users\shastin\desktop\tp final programacion estructurada\tp_final_estrada\main.c
+	<stdio.h>
+	<stdlib.h>
+	<stdint.h>
+	<string.h>
+	<windows.h>
+	"declaraciones.h"
+
+1723391313 c:\users\shastin\desktop\tp final programacion estructurada\tp_final_estrada\declaraciones.h
+	<stdio.h>
+	<stdlib.h>
+	<stdint.h>
+	<string.h>
+	<windows.h>
+
+1723329011 source:c:\users\shastin\desktop\tp final programacion estructurada\tp_final_estrada\funciones.c
+	<stdio.h>
+	<stdlib.h>
+	<stdint.h>
+	<string.h>
+	"declaraciones.h"
+
+1723328584 source:c:\users\shastin\desktop\tp final programacion estructurada\tp_final_estrada\manejo_archivos.c
+	<stdio.h>
+	<stdlib.h>
+	<stdint.h>
+	<string.h>
+	<windows.h>
+	"declaraciones.h"
+
+1723391313 source:c:\users\shastin\desktop\tp final programacion estructurada\tp_final_estrada\lecturas.c
+	<stdio.h>
+	<stdlib.h>
+	<stdint.h>
+	<string.h>
+	<windows.h>
+	"declaraciones.h"
+
+1723391313 source:c:\users\shastin\desktop\tp final programacion estructurada\tp_final_estrada\escrituras.c
+	<stdio.h>
+	<stdlib.h>
+	<stdint.h>
+	<string.h>
+	<windows.h>
+	"declaraciones.h"
+
+1723391313 source:c:\users\shastin\desktop\tp final programacion estructurada\tp_final_estrada\validar_liberar.c
+	<stdio.h>
+	<stdlib.h>
+	<stdint.h>
+	<string.h>
+	<windows.h>
+	"declaraciones.h"
+
+1723391313 source:c:\users\shastin\desktop\tp final programacion estructurada\tp_final_estrada\procesados.c
+	<stdio.h>
+	<stdlib.h>
+	<stdint.h>
+	<string.h>
+	<windows.h>
+	"declaraciones.h"
+
