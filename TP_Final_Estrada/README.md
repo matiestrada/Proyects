@@ -1,4 +1,4 @@
-Este programa implementa una aplicación en C para procesar archivos de audio en formato .wav. Su propósito es manipular, filtrar y analizar archivos de audio, utilizando coeficientes de un filtro pasabajos digital.
+Este proyecto fue realizado en el IDE "CodeBlocks" y el mismo implementa una aplicación en C para procesar archivos de audio en formato .wav. Su propósito es manipular, filtrar y analizar archivos de audio, utilizando coeficientes de un filtro pasabajos digital.
 
 Funcionalidades principales:
 * Validar los archivos de entrada (.wav y coeficientes .txt).
