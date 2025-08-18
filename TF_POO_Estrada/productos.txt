@@ -1,0 +1,5 @@
+Limpieza;1;Detergente 1L;Magistral;4200.1;565;120;2027-6-13;Cocina;0
+Limpieza;2;Desodorante de Ambiente 500cc;Poett;2644.9;281;60;2028-12-5;Ambiente;0
+Electronico;3;Smart TV 50";Samsung;519000;6;15;12;220
+Limpieza;4;Papel Higienico x4;Bonux;2100.5;532;90;2030-9-15;Bano;0
+Limpieza;5;Bolsa de Residuos x50;Bonux;3650.99;268;140;2030-1-2;Cocina;0

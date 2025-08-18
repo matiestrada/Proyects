@@ -1,0 +1,94 @@
+# depslib dependency file v1.0
+1755522957 source:c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\main.cpp
+	<iostream>
+	"Sistema.h"
+
+1755537938 source:c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\src\producto.cpp
+	"Producto.h"
+
+1755475370 c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\include\producto.h
+	<iostream>
+	<string>
+
+1755375588 source:c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\src\proveedor.cpp
+	"Proveedor.h"
+	"Producto.h"
+
+1755375215 c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\include\proveedor.h
+	<iostream>
+	<string>
+	<vector>
+	"Producto.h"
+
+1755375215 source:c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\src\fecha.cpp
+	"Fecha.h"
+
+1755375215 c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\include\fecha.h
+	<iostream>
+	<string>
+
+1755449860 source:c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\src\remito.cpp
+	"Remito.h"
+
+1755449812 c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\include\remito.h
+	<iostream>
+	<string>
+	<vector>
+	"Fecha.h"
+
+1755475054 source:c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\src\inventario.cpp
+	"Inventario.h"
+	<iostream>
+
+1755527791 c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\include\inventario.h
+	<vector>
+	"Producto.h"
+	"GestorProveedores.h"
+
+1755465081 source:c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\src\gestorproveedores.cpp
+	"GestorProveedores.h"
+	<iostream>
+
+1755528054 c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\include\gestorproveedores.h
+	<vector>
+	"Proveedor.h"
+	"Producto.h"
+
+1755482403 source:c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\src\gestortransacciones.cpp
+	"GestorTransacciones.h"
+	<iostream>
+
+1755482378 c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\include\gestortransacciones.h
+	<vector>
+	"Remito.h"
+	"Inventario.h"
+
+1755538717 source:c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\src\sistema.cpp
+	"Sistema.h"
+	<iostream>
+	<limits>
+	<sstream>
+
+1755531054 c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\include\sistema.h
+	<memory>
+	<stdexcept>
+	<string>
+	"Inventario.h"
+	"GestorProveedores.h"
+	"GestorTransacciones.h"
+	"Repositorio.h"
+
+1755484586 source:c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\src\repositorio.cpp
+	"Repositorio.h"
+
+1755524603 c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\include\repositorio.h
+	<iostream>
+	<fstream>
+	<sstream>
+	<string>
+	<memory>
+	"Producto.h"
+	"Inventario.h"
+	"GestorProveedores.h"
+	"GestorTransacciones.h"
+
