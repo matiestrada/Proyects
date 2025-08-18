@@ -78,8 +78,9 @@
 	"GestorTransacciones.h"
 	"Repositorio.h"
 
-1755484586 source:c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\src\repositorio.cpp
+1755541592 source:c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\src\repositorio.cpp
 	"Repositorio.h"
+	<stdexcept>
 
 1755524603 c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\include\repositorio.h
 	<iostream>
