@@ -127,6 +127,7 @@ vector<Producto*> ProductosTextoStore::cargar() {
 // Implementacion ProductosBinarioStore (Estrategia Concreta)
 // ========================================================
 
+// funciones auxiliares
 void escribirString(ofstream& out, const string& str) {
     size_t tam = str.size();
     out.write(reinterpret_cast<const char*>(&tam), sizeof(tam));

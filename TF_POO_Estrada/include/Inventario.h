@@ -4,11 +4,11 @@
 #include <vector>
 #include "Producto.h"
 #include "GestorProveedores.h"
-#include "ProductosStore.h"
+#include "ProductosStore.h" // header con el patron strategy para poder guardar/cargar en distintos tipos de archivos
 
 using namespace std;
 
-class GestorProveedores;
+class GestorProveedores; // Foward Declaration
 
 // ===================
 // Declaracion Inventario

@@ -6,6 +6,8 @@
 #include <limits>
 #include <cstdlib>
 
+//namespace con funciones utiles para el menu de usuario y la lectura de entradas de teclado.
+
 namespace InputUtils {
 
     inline void limpiarPantalla() {

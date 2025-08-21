@@ -12,7 +12,7 @@ using namespace std;
 // Estructura DetalleRemito
 // ========================
 struct DetalleRemito {
-    int codigoProducto;  // Codigo del producto involucrado
+    int codigoProducto;  // Codigo del producto involucrado, no guardo punteros a los productos ya que si se elimina un producto del inventario se perderia la informacion del remito
     int cantidad;        // Cantidad de la operación
 
     DetalleRemito(int codigo, int c) : codigoProducto(codigo), cantidad(c) {}

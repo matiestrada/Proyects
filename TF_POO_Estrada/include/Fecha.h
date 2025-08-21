@@ -28,7 +28,7 @@ public:
     void setMonth(int m);
     void setYear(int y);
 
-    // toString
+    // sobrecarga del operador << para poder imprimir en formato fecha tradicional: dd/nn/yyyy
     friend ostream& operator<<(ostream& os, const Fecha& f);
 };
 

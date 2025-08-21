@@ -3,11 +3,11 @@
 
 #include <iostream>
 #include "Sistema.h"
-#include "InputUtils.h"
+#include "InputUtils.h" // Header que contiene el namespace de utilidades de entrada auxiliares
 
 using namespace std;
 
-class Sistema;
+class Sistema; // Foward declaration
 
 class Menu{
 private:

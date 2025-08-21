@@ -6,7 +6,7 @@
 #include "Inventario.h"
 #include "GestorProveedores.h"
 #include "GestorTransacciones.h"
-#include "InputUtils.h"
+#include "InputUtils.h" // Header que contiene el namespace de utilidades de entrada auxiliares
 
 class Sistema{
 private:
@@ -15,7 +15,7 @@ private:
     GestorTransacciones& gestorTransacciones;
 
     // Autoincrementales
-    int ultimoCodigoProducto = 0;
+    int ultimoCodigoProducto = 0; // variables para que se asignen codigos/ids automaticamente
     int ultimoIdProveedor = 0;
     int ultimoIdRemito = 0;
 

@@ -9,8 +9,7 @@
 
 using namespace std;
 
-//  Forward declaration
-class Inventario;
+class Inventario; //  Forward declaration
 
 // =======================
 // Declaracion GestorProveedores

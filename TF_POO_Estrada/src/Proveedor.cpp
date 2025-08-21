@@ -8,6 +8,7 @@
 Proveedor::Proveedor(int id, const string& nombre, const string& contacto)
     : id(id), nombre(nombre), contacto(contacto) {}
 
+// se limpia el vector de productos asociados
 Proveedor::~Proveedor() {
     productosAsociados.clear();
 }
@@ -17,6 +18,8 @@ int Proveedor::getId() const { return id; }
 string Proveedor::getNombre() const { return nombre; }
 string Proveedor::getContacto() const { return contacto; }
 const vector<Producto*>& Proveedor::getProductosAsociados() const { return productosAsociados; }
+
+//getter solamente de los codigos de los productos asociados para poder realizar la persistencia de la informacion
 vector<int> Proveedor::getCodigosProductos() const {
     vector<int> codigos;
     for (auto* p : productosAsociados) {
@@ -33,10 +36,11 @@ void Proveedor::setContacto(const string& nuevoContacto) { contacto = nuevoConta
 // Asociacion de productos
 void Proveedor::asociarProducto(Producto* producto) {
     if (producto) {
-        productosAsociados.push_back(producto);
+        productosAsociados.push_back(producto); //se agrega el puntero al producto al final del vector
     }
 }
 
+// desasociar el producto del proveedor, no se elimina el producto
 void Proveedor::desasociarProducto(int codigoProducto) {
     for (auto it = productosAsociados.begin(); it != productosAsociados.end(); ++it) {
         if ((*it)->getCodigo() == codigoProducto) {

@@ -16,7 +16,7 @@ protected:
     string marca;
     double precio;
     int stock;
-    int umbralStockBajo;
+    int umbralStockBajo; //umbral para emitir las alertas en caso de que el stock sea bajo
 
 public:
     //Constructor y destructor

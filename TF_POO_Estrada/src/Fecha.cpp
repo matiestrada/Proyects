@@ -17,6 +17,7 @@ void Fecha::setDay(int d) { day = d; }
 void Fecha::setMonth(int m) { month = m; }
 void Fecha::setYear(int y) { year = y; }
 
+// sobrecarga del operador << para poder imprimir en formato fecha tradicional
 ostream& operator<<(ostream& os, const Fecha& f){
     os << f.getDay() << "/" << f.getMonth() << "/" << f.getYear();
     return os;

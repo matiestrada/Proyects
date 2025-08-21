@@ -16,7 +16,7 @@ private:
     int id;
     string nombre;
     string contacto;
-    vector<Producto*> productosAsociados;
+    vector<Producto*> productosAsociados; //punteros a productos asociados, cada producto esta asociado a un unico proveedor.
 
 public:
     //Constructor y destructor

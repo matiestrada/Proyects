@@ -5,6 +5,7 @@
 // =====================
 Remito::Remito(int id, const Fecha& fecha) : id(id), fecha(fecha) {}
 
+// se limpia el vector de detalles
 Remito::~Remito() {
     detalles.clear();
 }
@@ -64,7 +65,7 @@ void RemitoSalida::mostrarInfo() const {
     cout << "Detalles:" << endl;
 
     for (const auto& d : detalles) {
-        cout << "Código Producto: " << d.codigoProducto
+        cout << "Codigo Producto: " << d.codigoProducto
              << " | Cantidad: " << d.cantidad << endl;
     }
 

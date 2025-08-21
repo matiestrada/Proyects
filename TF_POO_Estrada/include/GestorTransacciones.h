@@ -13,7 +13,7 @@ using namespace std;
 // ==========================
 class GestorTransacciones {
 private:
-    vector<Remito*> remitos;  // lista histórica de remitos
+    vector<Remito*> remitos;  // lista historica de remitos
     IRemitosStore* store; // estrategia de persistencia
 
 public:
