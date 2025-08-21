@@ -28,7 +28,8 @@ public:
     void setMonth(int m);
     void setYear(int y);
 
-    string toString() const;
+    // toString
+    friend ostream& operator<<(ostream& os, const Fecha& f);
 };
 
 #endif // FECHA_H

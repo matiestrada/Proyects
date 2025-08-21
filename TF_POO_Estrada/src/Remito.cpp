@@ -38,11 +38,11 @@ string RemitoEntrada::tipoRemito() const { return "Entrada"; }
 void RemitoEntrada::mostrarInfo() const {
     cout << "=== Remito de ENTRADA ===" << endl;
     cout << "ID: " << id << endl;
-    cout << "Fecha: " << fecha.toString() << endl;
+    cout << "Fecha: " << fecha << endl;
     cout << "Detalles:" << endl;
 
     for (const auto& d : detalles) {
-        cout << "Código Producto: " << d.codigoProducto
+        cout << "Codigo Producto: " << d.codigoProducto
              << " | Cantidad: " << d.cantidad << endl;
     }
 
@@ -60,7 +60,7 @@ string RemitoSalida::tipoRemito() const { return "Salida"; }
 void RemitoSalida::mostrarInfo() const {
     cout << "=== Remito de SALIDA ===" << endl;
     cout << "ID: " << id << endl;
-    cout << "Fecha: " << fecha.toString() << endl;
+    cout << "Fecha: " << fecha << endl;
     cout << "Detalles:" << endl;
 
     for (const auto& d : detalles) {

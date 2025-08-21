@@ -17,6 +17,13 @@ int Proveedor::getId() const { return id; }
 string Proveedor::getNombre() const { return nombre; }
 string Proveedor::getContacto() const { return contacto; }
 const vector<Producto*>& Proveedor::getProductosAsociados() const { return productosAsociados; }
+vector<int> Proveedor::getCodigosProductos() const {
+    vector<int> codigos;
+    for (auto* p : productosAsociados) {
+        if (p) codigos.push_back(p->getCodigo());
+    }
+    return codigos;
+}
 
 // Setters
 void Proveedor::setId(int nuevoId) { id = nuevoId; }

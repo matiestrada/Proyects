@@ -28,6 +28,7 @@ public:
     string getNombre() const;
     string getContacto() const;
     const vector<Producto*>& getProductosAsociados() const;
+    vector<int> getCodigosProductos() const;
 
     // Setters
     void setId(int nuevoId);
@@ -36,7 +37,7 @@ public:
 
     // Asociacion de productos
     void asociarProducto(Producto* producto);
-    void desasociarProducto(int codigoProducto);
+    void desasociarProducto(int codigoProducto); // recorre todos los proveedores para desasociar el producto, tiene que estar en un solo proveedor
 
     void mostrarInfo() const;
 };

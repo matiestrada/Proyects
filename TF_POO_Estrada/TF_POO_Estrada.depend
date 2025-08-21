@@ -1,33 +1,36 @@
 # depslib dependency file v1.0
-1755522957 source:c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\main.cpp
-	<iostream>
+1755722499 source:c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\main.cpp
+	"Menu.h"
 	"Sistema.h"
+	"Inventario.h"
+	"GestorProveedores.h"
+	"GestorTransacciones.h"
 
 1755537938 source:c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\src\producto.cpp
 	"Producto.h"
 
-1755475370 c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\include\producto.h
+1755699373 c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\include\producto.h
 	<iostream>
 	<string>
 
-1755375588 source:c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\src\proveedor.cpp
+1755700300 source:c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\src\proveedor.cpp
 	"Proveedor.h"
 	"Producto.h"
 
-1755375215 c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\include\proveedor.h
+1755700517 c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\include\proveedor.h
 	<iostream>
 	<string>
 	<vector>
 	"Producto.h"
 
-1755375215 source:c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\src\fecha.cpp
+1755700925 source:c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\src\fecha.cpp
 	"Fecha.h"
 
-1755375215 c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\include\fecha.h
+1755701157 c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\include\fecha.h
 	<iostream>
 	<string>
 
-1755449860 source:c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\src\remito.cpp
+1755701101 source:c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\src\remito.cpp
 	"Remito.h"
 
 1755449812 c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\include\remito.h
@@ -36,60 +39,143 @@
 	<vector>
 	"Fecha.h"
 
-1755475054 source:c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\src\inventario.cpp
+1755701814 source:c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\src\inventario.cpp
 	"Inventario.h"
 	<iostream>
 
-1755527791 c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\include\inventario.h
+1755701787 c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\include\inventario.h
 	<vector>
 	"Producto.h"
 	"GestorProveedores.h"
+	"ProductosStore.h"
 
-1755465081 source:c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\src\gestorproveedores.cpp
+1755703175 source:c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\src\gestorproveedores.cpp
 	"GestorProveedores.h"
 	<iostream>
 
-1755528054 c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\include\gestorproveedores.h
+1755702006 c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\include\gestorproveedores.h
 	<vector>
 	"Proveedor.h"
 	"Producto.h"
+	"ProveedoresStore.h"
+	"Inventario.h"
 
-1755482403 source:c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\src\gestortransacciones.cpp
+1755703310 source:c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\src\gestortransacciones.cpp
 	"GestorTransacciones.h"
 	<iostream>
 
-1755482378 c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\include\gestortransacciones.h
+1755703381 c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\include\gestortransacciones.h
 	<vector>
 	"Remito.h"
 	"Inventario.h"
+	"RemitosStore.h"
 
-1755538717 source:c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\src\sistema.cpp
+1755744046 source:c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\src\sistema.cpp
 	"Sistema.h"
-	<iostream>
+	"InputUtils.h"
 	<limits>
 	<sstream>
+	<algorithm>
 
-1755531054 c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\include\sistema.h
-	<memory>
-	<stdexcept>
+1755744063 c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\include\sistema.h
+	<iostream>
 	<string>
 	"Inventario.h"
 	"GestorProveedores.h"
 	"GestorTransacciones.h"
+	"InputUtils.h"
+
+1755612939 source:c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\src\repositorio.cpp
 	"Repositorio.h"
 
-1755541592 source:c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\src\repositorio.cpp
-	"Repositorio.h"
-	<stdexcept>
-
-1755524603 c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\include\repositorio.h
+1755612939 c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\include\repositorio.h
 	<iostream>
-	<fstream>
-	<sstream>
+	<vector>
 	<string>
 	<memory>
 	"Producto.h"
-	"Inventario.h"
-	"GestorProveedores.h"
-	"GestorTransacciones.h"
+	"Proveedor.h"
+	"Remito.h"
+
+1755613614 source:c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\src\persistenciaproductos.cpp
+	"PersistenciaProductos.h"
+
+1755613614 c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\include\persistenciaproductos.h
+	<vector>
+	<string>
+	"Repositorio.h"
+	"Producto.h"
+
+1755613676 source:c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\src\persistenciaproveedores.cpp
+	"PersistenciaProveedores.h"
+
+1755613676 c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\include\persistenciaproveedores.h
+	<vector>
+	<string>
+	"Repositorio.h"
+	"Proveedor.h"
+
+1755615316 source:c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\src\istore.cpp
+	"IStore.h"
+
+1755615316 c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\include\istore.h
+	<iostream>
+	<vector>
+	"Producto.h"
+	"Proveedor.h"
+	"Remito.h"
+
+1755704140 source:c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\src\productosstore.cpp
+	"ProductosStore.h"
+	<fstream>
+	<stdexcept>
+	<sstream>
+
+1755712012 c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\include\productosstore.h
+	<iostream>
+	<vector>
+	"Producto.h"
+
+1755704677 source:c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\src\proveedoresstore.cpp
+	"ProveedoresStore.h"
+	<fstream>
+	<sstream>
+	<stdexcept>
+
+1755713161 c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\include\proveedoresstore.h
+	<iostream>
+	<vector>
+	"Proveedor.h"
+
+1755704971 source:c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\src\remitosstore.cpp
+	"RemitosStore.h"
+	<fstream>
+	<sstream>
+	<stdexcept>
+
+1755704859 c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\include\remitosstore.h
+	<iostream>
+	<vector>
+	"Remito.h"
+
+1755718346 source:c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\src\iomanager.cpp
+
+1755718346 c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\include\iomanager.h
+
+1755743358 source:c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\src\menu.cpp
+	"Menu.h"
+	"Sistema.h"
+	"InputUtils.h"
+	<iostream>
+
+1755743235 c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\include\menu.h
+	<iostream>
+	"Sistema.h"
+	"InputUtils.h"
+
+1755743147 c:\users\estra_o3lm7ip\onedrive\escritorio\matias\tf\tf_poo_estrada\include\inpututils.h
+	<iostream>
+	<string>
+	<limits>
+	<cstdlib>
 

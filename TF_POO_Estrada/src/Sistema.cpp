@@ -1,116 +1,55 @@
 #include "Sistema.h"
-#include <iostream>
+#include "InputUtils.h"
 #include <limits>
 #include <sstream>
+#include <algorithm>
 
 using namespace std;
 
-// ======================
-// Constructor
-// ======================
-Sistema::Sistema(){
-    try {
-        cargarDatos();
-    } catch (const exception& e) {
-        cerr << "[ERROR] Al cargar datos: " << e.what() << "\n";
-    }
+Sistema::Sistema(Inventario& inv, GestorProveedores& gp, GestorTransacciones& gt)
+    : inventario(inv), gestorProveedores(gp), gestorTransacciones(gt) {}
+
+/* ===================== Persistencia ===================== */
+void Sistema::cargarTodos() {
+    // Orden: Productos -> Proveedores -> Remitos
+    inventario.cargar();
+    gestorProveedores.cargar(inventario);
+    gestorTransacciones.cargar();
+
+    // tras cargar, recalculamos contadores
+    recalcularContadores();
 }
 
-// ======================
-// Utilidades de UI/Input
-// ======================
-void Sistema::limpiarPantalla() const {
-#ifdef _WIN32
-    system("cls");
-#else
-    system("clear");
-#endif
+void Sistema::guardarTodos() {
+    // Orden: Productos -> Proveedores -> Remitos
+    inventario.guardar();
+    gestorProveedores.guardar();
+    gestorTransacciones.guardar();
 }
 
-void Sistema::pausar() const {
-    cout << "\nPresione ENTER para continuar...";
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-}
-
-int Sistema::leerEntero(const string& prompt, bool permitirCeroNeg) const {
-    while (true) {
-        cout << prompt;
-        string s; getline(cin, s);
-        stringstream ss(s);
-        int v; char c;
-        if ((ss >> v) && !(ss >> c)) {
-            if (!permitirCeroNeg && v <= 0) {
-                cout << " Debe ser un entero positivo.\n";
-                continue;
-            }
-            return v;
-        }
-        cout << " Entrada invalida. Intente nuevamente.\n";
-    }
-}
-
-double Sistema::leerDouble(const string& prompt) const {
-    while (true) {
-        cout << prompt;
-        string s; getline(cin, s);
-        stringstream ss(s);
-        double v; char c;
-        if ((ss >> v) && !(ss >> c)) return v;
-        cout << " Numero invalido. Intente nuevamente.\n";
-    }
-}
-
-string Sistema::leerLinea(const string& prompt) const {
-    cout << prompt;
-    string line; getline(cin, line);
-    return line;
-}
-
-bool Sistema::leerBoolSN(const string& prompt) const {
-    while (true) {
-        cout << prompt << " (S/N): ";
-        string s; getline(cin, s);
-        if (s.empty()) continue;
-        char ch = static_cast<char>(tolower(s[0]));
-        if (ch=='s' || s=="1") return true;
-        if (ch=='n' || s=="0") return false;
-        cout << " Responda 'S' o 'N'.\n";
-    }
-}
-
-// ======================
-// Persistencia
-// ======================
-void Sistema::cargarDatos() {
+/* =========== Recalcular autoincrementales =========== */
+void Sistema::recalcularContadores() {
     // Productos
-    repo.setEstrategia(new PersistenciaProductos(inventario));
-    repo.cargar();
+    int maxCodigo = 0;
+    for (auto* p : inventario.getProductos())
+        maxCodigo = std::max(maxCodigo, p->getCodigo());
+    ultimoCodigoProducto = maxCodigo;
 
-    // Proveedores (asocia productos por código ya cargados)
-    repo.setEstrategia(new PersistenciaProveedores(gestorProveedores, inventario));
-    repo.cargar();
+    // Proveedores
+    int maxProv = 0;
+    for (auto* pr : gestorProveedores.getProveedores())
+        maxProv = std::max(maxProv, pr->getId());
+    ultimoIdProveedor = maxProv;
 
     // Remitos
-    repo.setEstrategia(new PersistenciaRemitos(gestorTransacciones));
-    repo.cargar();
+    int maxRem = 0;
+    for (auto* r : gestorTransacciones.getRemitos())
+        maxRem = std::max(maxRem, r->getId());
+    ultimoIdRemito = maxRem;
 }
 
-void Sistema::guardarDatos() {
-    // Guardamos todo
-    repo.setEstrategia(new PersistenciaProductos(inventario));
-    repo.guardar();
-
-    repo.setEstrategia(new PersistenciaProveedores(gestorProveedores, inventario));
-    repo.guardar();
-
-    repo.setEstrategia(new PersistenciaRemitos(gestorTransacciones));
-    repo.guardar();
-}
-
-// ======================
-// Menú principal
-// ======================
-void Sistema::alertaStockBajo() const {
+/* ===================== Alerta stock bajo ===================== */
+void Sistema::alertaProductosStockBajo() const {
     auto bajos = inventario.getProductosStockBajo();
     cout << "========== ALERTA: Stock Bajo ==========\n";
     if (bajos.empty()) {
@@ -125,93 +64,57 @@ void Sistema::alertaStockBajo() const {
     cout << "========================================\n\n";
 }
 
-void Sistema::menuPrincipal() {
-    while (true) {
-        limpiarPantalla();
-        alertaStockBajo();
+/* ===================== Productos ===================== */
+void Sistema::operacionAgregarProducto() {
+    InputUtils::limpiarPantalla();
+    cout << "=== Agregar Producto ===\n";
 
-        cout << "=========== MENU PRINCIPAL ============\n";
-        cout << "1) Gestionar Productos\n";
-        cout << "2) Gestionar Proveedores\n";
-        cout << "3) Gestionar Transacciones\n";
-        cout << "4) Salir\n";
-        cout << "======================================\n";
-
-        int op = leerEntero("Elija una opcion: ");
-        switch (op) {
-            case 1: menuProductos(); break;
-            case 2: menuProveedores(); break;
-            case 3: menuTransacciones(); break;
-            case 4:
-                cout << "Guardando informacion...\n";
-                try { guardarDatos(); } catch (...) { /* ya mostramos en persistencias si falla */ }
-                cout << "Hasta luego!\n";
-                return;
-            default:
-                cout << " Opcion invalida.\n"; pausar();
-        }
-    }
-}
-
-// ======================
-// Submenú Productos
-// ======================
-int Sistema::elegirProveedorId() const {
+    //Se muestra lista de proveedores para que el usuario elija a cual pertenece.
     cout << "\n=== Proveedores disponibles ===\n";
-    gestorProveedores.mostrarProveedores();
-    int id = leerEntero("Ingrese ID de proveedor: ");
-    if (!gestorProveedores.buscarProveedor(id)) {
-        cout << " No existe un proveedor con ID " << id << ".\n";
-        return -1;
+    operacionMostrarProveedores();
+    int idProv = InputUtils::leerEntero("Ingrese ID de proveedor: ");
+    auto* prov = gestorProveedores.buscarProveedor(idProv);
+    if (!prov) {
+        cout << " No existe un proveedor con ID " << idProv << ".\n";
+        InputUtils::pausar();
+        return;
     }
-    return id;
-}
 
-int Sistema::elegirTipoProducto() const {
+    //Se muestra las opciones de tipos de productos disponibles para que el usuario elija.
     cout << "\nTipos de producto:\n";
     cout << "1) Alimenticio\n";
     cout << "2) Electronico\n";
     cout << "3) Limpieza\n";
-    while (true) {
-        int t = leerEntero("Elija tipo (1-3): ");
-        if (t>=1 && t<=3) return t;
+    int tipo = -1;
+    while (tipo<1 || tipo>3) {
+        tipo = InputUtils::leerEntero("Elija tipo (1-3): ");
+        if (tipo<1 || tipo>3)
         cout << " Opcion invalida (1-3).\n";
     }
-}
 
-void Sistema::opAgregarProducto() {
-    limpiarPantalla();
-    cout << "=== Agregar Producto ===\n";
-    int idProv = elegirProveedorId();
-    if (idProv < 0) { pausar(); return; }
+    int codigo = ++ultimoCodigoProducto;
+    cout << "(Codigo asignado automaticamente: " << codigo << ")\n";
 
-    int tipo = elegirTipoProducto();
-
-    int codigo = leerEntero("Codigo (entero, unico): ", false);
-    if (inventario.buscarProducto(codigo)) {
-        cout << " Ya existe un producto con ese codigo.\n"; pausar(); return;
-    }
-    string nombre = leerLinea("Nombre: ");
-    string marca  = leerLinea("Marca: ");
-    double precio = leerDouble("Precio: ");
-    int stock     = leerEntero("Stock: ");
-    int umbral    = leerEntero("Umbral de stock bajo: ");
+    string nombre = InputUtils::leerLinea("Nombre: ");
+    string marca  = InputUtils::leerLinea("Marca: ");
+    double precio = InputUtils::leerDouble("Precio: ");
+    int stock     = InputUtils::leerEntero("Stock: ");
+    int umbral    = InputUtils::leerEntero("Umbral de stock bajo: ");
 
     Producto* nuevo = nullptr;
-
     try {
         if (tipo == 1) {
-            string fv = leerLinea("Fecha de vencimiento (AAAA-MM-DD): ");
-            bool fresco = leerBoolSN("¿Es fresco?");
+            string fv = InputUtils::leerLinea("Fecha de vencimiento (AAAA-MM-DD): ");
+            bool fresco = InputUtils::leerBoolSN("¿Es fresco?");
             nuevo = new ProductoAlimenticio(codigo, nombre, marca, precio, stock, umbral, fv, fresco);
         } else if (tipo == 2) {
-            int garantia = leerEntero("Garantia (meses): ");
-            int voltaje  = leerEntero("Voltaje: ");
+            int garantia = InputUtils::leerEntero("Garantia (meses): ");
+            int voltaje  = InputUtils::leerEntero("Voltaje: ");
             nuevo = new ProductoElectronico(codigo, nombre, marca, precio, stock, umbral, garantia, voltaje);
         } else {
-            string fv = leerLinea("Fecha de vencimiento (AAAA-MM-DD): ");
-            string sup = leerLinea("Superficie de uso: ");
-            bool tox = leerBoolSN("¿Es toxico?");
+            string fv = InputUtils::leerLinea("Fecha de vencimiento (AAAA-MM-DD): ");
+            string sup = InputUtils::leerLinea("Superficie de uso: ");
+            bool tox = InputUtils::leerBoolSN("¿Es toxico?");
             nuevo = new ProductoLimpieza(codigo, nombre, marca, precio, stock, umbral, fv, sup, tox);
         }
         inventario.agregarProducto(nuevo);
@@ -219,17 +122,25 @@ void Sistema::opAgregarProducto() {
             cout << " No se pudo asociar el producto al proveedor.\n";
         }
         cout << " Producto agregado exitosamente.\n";
-        guardarDatos();
+        guardarTodos();
     } catch (const exception& e) {
         delete nuevo;
         cout << "[ERROR] No se pudo crear/agregar el producto: " << e.what() << "\n";
     }
-    pausar();
+    InputUtils::pausar();
 }
 
-void Sistema::editarAtributosProducto(Producto* p) {
-    while (true) {
-        limpiarPantalla();
+void Sistema::operacionModificarProducto() {
+    InputUtils::limpiarPantalla();
+    cout << "=== Modificar Producto ===\n";
+    int codigo = InputUtils::leerEntero("Codigo del producto a modificar: ", false);
+    Producto* p = inventario.buscarProducto(codigo);
+    if (!p) {
+        cout << " No existe un producto con ese codigo.\n"; InputUtils::pausar(); return;
+    }
+
+        while (true) {
+        InputUtils::limpiarPantalla();
         cout << "=== Editar Producto (cod " << p->getCodigo() << ") ===\n";
         cout << "1) Nombre (actual: " << p->getNombre() << ")\n";
         cout << "2) Marca  (actual: " << p->getMarca()  << ")\n";
@@ -237,7 +148,6 @@ void Sistema::editarAtributosProducto(Producto* p) {
         cout << "4) Stock  (actual: " << p->getStock()  << ")\n";
         cout << "5) Umbral stock bajo (actual: " << p->getUmbralStockBajo() << ")\n";
 
-        // Campos específicos por tipo
         auto* pa = dynamic_cast<ProductoAlimenticio*>(p);
         auto* pe = dynamic_cast<ProductoElectronico*>(p);
         auto* pl = dynamic_cast<ProductoLimpieza*>(p);
@@ -257,250 +167,178 @@ void Sistema::editarAtributosProducto(Producto* p) {
         int salirOpt = ++base;
         cout << salirOpt << ") Volver\n";
 
-        int op = leerEntero("Elija opcion: ");
+        int op = InputUtils::leerEntero("Elija opcion: ");
         if (op == salirOpt) return;
 
         try {
             switch (op) {
-                case 1: p->setNombre(leerLinea("Nuevo nombre: ")); break;
-                case 2: p->setMarca(leerLinea("Nueva marca: ")); break;
-                case 3: p->setPrecio(leerDouble("Nuevo precio: ")); break;
-                case 4: p->setStock(leerEntero("Nuevo stock: ")); break;
-                case 5: p->setUmbralStockBajo(leerEntero("Nuevo umbral: ")); break;
+                case 1: p->setNombre(InputUtils::leerLinea("Nuevo nombre: ")); break;
+                case 2: p->setMarca(InputUtils::leerLinea("Nueva marca: ")); break;
+                case 3: p->setPrecio(InputUtils::leerDouble("Nuevo precio: ")); break;
+                case 4: p->setStock(InputUtils::leerEntero("Nuevo stock: ")); break;
+                case 5: p->setUmbralStockBajo(InputUtils::leerEntero("Nuevo umbral: ")); break;
                 default:
                     if (pa) {
-                        if (op == 6) pa->setFechaVencimiento(leerLinea("Nueva fecha venc.: "));
-                        else if (op == 7) pa->setEsFresco(leerBoolSN("¿Es fresco?"));
+                        if (op == 6) pa->setFechaVencimiento(InputUtils::leerLinea("Nueva fecha venc.: "));
+                        else if (op == 7) pa->setEsFresco(InputUtils::leerBoolSN("¿Es fresco?"));
                         else throw invalid_argument("Opcion invalida.");
                     } else if (pe) {
-                        if (op == 6) pe->setGarantiaMeses(leerEntero("Nueva garantia (meses): "));
-                        else if (op == 7) pe->setVoltaje(leerEntero("Nuevo voltaje: "));
+                        if (op == 6) pe->setGarantiaMeses(InputUtils::leerEntero("Nueva garantia (meses): "));
+                        else if (op == 7) pe->setVoltaje(InputUtils::leerEntero("Nuevo voltaje: "));
                         else throw invalid_argument("Opcion invalida.");
                     } else if (pl) {
-                        if (op == 6) pl->setFechaVencimiento(leerLinea("Nueva fecha venc.: "));
-                        else if (op == 7) pl->setSuperficieUso(leerLinea("Nueva superficie: "));
-                        else if (op == 8) pl->setEsToxico(leerBoolSN("¿Es toxico?"));
+                        if (op == 6) pl->setFechaVencimiento(InputUtils::leerLinea("Nueva fecha venc.: "));
+                        else if (op == 7) pl->setSuperficieUso(InputUtils::leerLinea("Nueva superficie: "));
+                        else if (op == 8) pl->setEsToxico(InputUtils::leerBoolSN("¿Es toxico?"));
                         else throw invalid_argument("Opcion invalida.");
                     } else {
                         throw invalid_argument("Opcion invalida.");
                     }
             }
             cout << " Atributo actualizado.\n";
-            guardarDatos();
+            guardarTodos();
         } catch (const exception& e) {
             cout << "[ERROR] " << e.what() << "\n";
         }
-        pausar();
+       InputUtils::pausar();
     }
 }
 
-void Sistema::opModificarProducto() {
-    limpiarPantalla();
-    cout << "=== Modificar Producto ===\n";
-    int codigo = leerEntero("Codigo del producto a modificar: ", false);
-    Producto* p = inventario.buscarProducto(codigo);
-    if (!p) {
-        cout << " No existe un producto con ese codigo.\n"; pausar(); return;
-    }
-    editarAtributosProducto(p);
-}
-
-void Sistema::opEliminarProducto() {
-    limpiarPantalla();
+void Sistema::operacionEliminarProducto() {
+    InputUtils::limpiarPantalla();
     cout << "=== Eliminar Producto ===\n";
-    int codigo = leerEntero("Codigo del producto a eliminar: ", false);
+    int codigo = InputUtils::leerEntero("Codigo del producto a eliminar: ", false);
     if (!inventario.buscarProducto(codigo)) {
-        cout << " No existe un producto con ese codigo.\n"; pausar(); return;
+        cout << " No existe un producto con ese codigo.\n"; InputUtils::pausar(); return;
     }
-    if (!leerBoolSN("¿Confirma eliminacion?")) { cout << "Operacion cancelada.\n"; pausar(); return; }
+    if (!InputUtils::leerBoolSN("¿Confirma eliminacion?")) { cout << "Operacion cancelada.\n"; InputUtils::pausar(); return; }
 
-    try {
-        if (inventario.eliminarProducto(codigo, gestorProveedores)) {
-            cout << " Producto eliminado correctamente.\n";
-            guardarDatos();
-        } else {
-            cout << " No se pudo eliminar el producto.\n";
-        }
-    } catch (const exception& e) {
-        cout << "[ERROR] " << e.what() << "\n";
+    if (inventario.eliminarProducto(codigo, gestorProveedores)) {
+        cout << " Producto eliminado correctamente.\n";
+        guardarTodos();
+    } else {
+        cout << " No se pudo eliminar el producto.\n";
     }
-    pausar();
+    InputUtils::pausar();
 }
 
-void Sistema::opMostrarProductos() const {
-    limpiarPantalla();
+void Sistema::operacionMostrarProductos() const {
+    InputUtils::limpiarPantalla();
     cout << "=== Lista de Productos ===\n";
     inventario.mostrarProductos();
     cout << "\n";
-    // no pausa aquí; la hace el menú
 }
 
-void Sistema::menuProductos() {
-    while (true) {
-        limpiarPantalla();
-        cout << "====== Gestionar Productos ======\n";
-        cout << "1) Agregar producto\n";
-        cout << "2) Modificar producto\n";
-        cout << "3) Eliminar producto\n";
-        cout << "4) Mostrar lista de productos\n";
-        cout << "5) Volver\n";
-        cout << "=================================\n";
-        int op = leerEntero("Opcion: ");
-        switch (op) {
-            case 1: opAgregarProducto(); break;
-            case 2: opModificarProducto(); break;
-            case 3: opEliminarProducto(); break;
-            case 4: opMostrarProductos(); pausar(); break;
-            case 5: return;
-            default: cout << " Opcion invalida.\n"; pausar();
-        }
-    }
-}
-
-// ======================
-// Submenú Proveedores
-// ======================
-void Sistema::opAgregarProveedor() {
-    limpiarPantalla();
+/* ===================== Proveedores ===================== */
+void Sistema::operacionAgregarProveedor() {
+    InputUtils::limpiarPantalla();
     cout << "=== Agregar Proveedor ===\n";
-    int id = leerEntero("ID (entero, unico): ", false);
-    if (gestorProveedores.buscarProveedor(id)) {
-        cout << " Ya existe proveedor con ese ID.\n"; pausar(); return;
-    }
-    string nombre = leerLinea("Nombre: ");
-    string contacto = leerLinea("Contacto: ");
+    int id = ++ultimoIdProveedor;
+    cout << "(ID asignado automaticamente: " << id << ")\n";
+    string nombre = InputUtils::leerLinea("Nombre: ");
+    string contacto = InputUtils::leerLinea("Contacto: ");
 
     try {
         Proveedor* p = new Proveedor(id, nombre, contacto);
         gestorProveedores.agregarProveedor(p);
         cout << " Proveedor agregado.\n";
-        guardarDatos();
+        guardarTodos();
     } catch (const exception& e) {
         cout << "[ERROR] No se pudo crear/agregar proveedor: " << e.what() << "\n";
     }
-    pausar();
+    InputUtils::pausar();
 }
 
-void Sistema::editarAtributosProveedor(Proveedor* prov) {
-    while (true) {
-        limpiarPantalla();
+void Sistema::operacionModificarProveedor() {
+    InputUtils::limpiarPantalla();
+    cout << "=== Modificar Proveedor ===\n";
+    int id = InputUtils::leerEntero("ID del proveedor: ", false);
+    Proveedor* prov = gestorProveedores.buscarProveedor(id);
+    if (!prov) { cout << " No existe proveedor con ese ID.\n"; InputUtils::pausar(); return; }
+
+        while (true) {
+        InputUtils::limpiarPantalla();
         cout << "=== Editar Proveedor (ID " << prov->getId() << ") ===\n";
         cout << "1) Nombre (actual: " << prov->getNombre() << ")\n";
         cout << "2) Contacto (actual: " << prov->getContacto() << ")\n";
         cout << "3) Volver\n";
-        int op = leerEntero("Opcion: ");
+        int op = InputUtils::leerEntero("Opcion: ");
         if (op == 3) return;
 
         try {
             switch (op) {
-                case 1: prov->setNombre(leerLinea("Nuevo nombre: ")); break;
-                case 2: prov->setContacto(leerLinea("Nuevo contacto: ")); break;
-                default: cout << " Opción invalida.\n"; pausar(); continue;
+                case 1: prov->setNombre(InputUtils::leerLinea("Nuevo nombre: ")); break;
+                case 2: prov->setContacto(InputUtils::leerLinea("Nuevo contacto: ")); break;
+                default: cout << " Opcion invalida.\n"; InputUtils::pausar(); continue;
             }
             cout << " Atributo actualizado.\n";
-            guardarDatos();
+            guardarTodos();
         } catch (const exception& e) {
             cout << "[ERROR] " << e.what() << "\n";
         }
-        pausar();
+        InputUtils::pausar();
     }
 }
 
-void Sistema::opModificarProveedor() {
-    limpiarPantalla();
-    cout << "=== Modificar Proveedor ===\n";
-    int id = leerEntero("ID del proveedor: ", false);
-    Proveedor* pr = gestorProveedores.buscarProveedor(id);
-    if (!pr) { cout << " No existe proveedor con ese ID.\n"; pausar(); return; }
-    editarAtributosProveedor(pr);
-}
-
-void Sistema::opEliminarProveedor() {
-    limpiarPantalla();
+void Sistema::operacionEliminarProveedor() {
+    InputUtils::limpiarPantalla();
     cout << "=== Eliminar Proveedor ===\n";
-    int id = leerEntero("ID del proveedor: ", false);
+    int id = InputUtils::leerEntero("ID del proveedor: ", false);
     Proveedor* pr = gestorProveedores.buscarProveedor(id);
-    if (!pr) { cout << " No existe proveedor con ese ID.\n"; pausar(); return; }
-    if (!pr->getProductosAsociados().empty()) {
-        cout << " No se puede eliminar: tiene productos asociados.\n"; pausar(); return;
-    }
-    if (!leerBoolSN("¿Confirma eliminacion?")) { cout << "Operacion cancelada.\n"; pausar(); return; }
+    if (!pr) { cout << " No existe proveedor con ese ID.\n"; InputUtils::pausar(); return; }
 
-    try {
-        gestorProveedores.eliminarProveedor(id);
-        cout << " Proveedor eliminado.\n";
-        guardarDatos();
-    } catch (const exception& e) {
-        cout << "[ERROR] " << e.what() << "\n";
+    if (!pr->getProductosAsociados().empty()) {
+        cout << " No se puede eliminar: tiene productos asociados.\n"; InputUtils::pausar(); return;
     }
-    pausar();
+    if (!InputUtils::leerBoolSN("¿Confirma eliminacion?")) { cout << "Operacion cancelada.\n"; InputUtils::pausar(); return; }
+
+    gestorProveedores.eliminarProveedor(id);
+    cout << " Proveedor eliminado.\n";
+    guardarTodos();
+    InputUtils::pausar();
 }
 
-void Sistema::opMostrarProveedores() const {
-    limpiarPantalla();
+void Sistema::operacionMostrarProveedores() const {
     cout << "=== Lista de Proveedores ===\n";
     gestorProveedores.mostrarProveedores();
     cout << "\n";
 }
 
-void Sistema::menuProveedores() {
-    while (true) {
-        limpiarPantalla();
-        cout << "====== Gestionar Proveedores ======\n";
-        cout << "1) Agregar proveedor\n";
-        cout << "2) Modificar proveedor\n";
-        cout << "3) Eliminar proveedor\n";
-        cout << "4) Mostrar lista de proveedores\n";
-        cout << "5) Volver\n";
-        cout << "===================================\n";
-        int op = leerEntero("Opcion: ");
-        switch (op) {
-            case 1: opAgregarProveedor(); break;
-            case 2: opModificarProveedor(); break;
-            case 3: opEliminarProveedor(); break;
-            case 4: opMostrarProveedores(); pausar(); break;
-            case 5: return;
-            default: cout << " Opcion invalida.\n"; pausar();
-        }
-    }
-}
-
-// ======================
-// Submenú Transacciones
-// ======================
-static bool validarStockSalida(const Inventario& inv, int codigo, int cantidad) {
+/* ===================== Transacciones ===================== */
+static bool validarStockSalidaLocal(const Inventario& inv, int codigo, int cantidad) {
     Producto* p = inv.buscarProducto(codigo);
     if (!p) return false;
     return p->getStock() >= cantidad;
 }
 
-void Sistema::opRegistrarRemitoEntrada() {
-    limpiarPantalla();
+void Sistema::operacionRegistrarRemitoEntrada() {
+    InputUtils::limpiarPantalla();
     cout << "=== Registrar Remito de ENTRADA ===\n";
-    int id = leerEntero("ID de remito (unico): ", false);
-    if (gestorTransacciones.buscarRemito(id)) {
-        cout << " Ya existe un remito con ese ID.\n"; pausar(); return;
-    }
-    int d = leerEntero("Dia: ", false);
-    int m = leerEntero("Mes: ", false);
-    int y = leerEntero("Año: ", false);
+    int id = ++ultimoIdRemito;
+    cout << "(ID de remito asignado automaticamente: " << id << ")\n";
+    int d = InputUtils::leerEntero("Dia: ", false);
+    int m = InputUtils::leerEntero("Mes: ", false);
+    int y = InputUtils::leerEntero("Año: ", false);
 
     Remito* r = nullptr;
     try {
         r = new RemitoEntrada(id, Fecha(d,m,y));
     } catch (...) {
-        cout << "[ERROR] No se pudo crear el remito.\n"; pausar(); return;
+        cout << "[ERROR] No se pudo crear el remito.\n"; InputUtils::pausar(); return;
     }
+
+    cout << "\nProductos disponibles (codigo - nombre - stock):\n";
+    inventario.mostrarProductos();
 
     while (true) {
         cout << "\n1) Agregar detalle\n2) Finalizar remito\n";
-        int op = leerEntero("Opción: ");
+        int op = InputUtils::leerEntero("Opcion: ");
         if (op == 2) break;
         if (op != 1) { cout << " Opcion invalida.\n"; continue; }
 
-        int cod = leerEntero("Codigo de producto: ", false);
+        int cod = InputUtils::leerEntero("Codigo de producto: ", false);
         if (!inventario.buscarProducto(cod)) { cout << " Producto inexistente.\n"; continue; }
-        int cant = leerEntero("Cantidad (>=1): ", false);
+        int cant = InputUtils::leerEntero("Cantidad (>=1): ", false);
         if (cant <= 0) { cout << " Cantidad invalida.\n"; continue; }
 
         r->agregarProducto(cod, cant);
@@ -508,47 +346,48 @@ void Sistema::opRegistrarRemitoEntrada() {
     }
 
     try {
-        gestorTransacciones.registrarRemito(r, inventario); // actualiza stock
+        gestorTransacciones.registrarRemito(r, inventario); // actualiza stock (suma)
         cout << " Remito de entrada registrado.\n";
-        guardarDatos();
+        guardarTodos();
     } catch (const exception& e) {
         cout << "[ERROR] " << e.what() << "\n";
         delete r;
     }
-    pausar();
+    InputUtils::pausar();
 }
 
-void Sistema::opRegistrarRemitoSalida() {
-    limpiarPantalla();
+void Sistema::operacionRegistrarRemitoSalida() {
+    InputUtils::limpiarPantalla();
     cout << "=== Registrar Remito de SALIDA ===\n";
-    int id = leerEntero("ID de remito (unico): ", false);
-    if (gestorTransacciones.buscarRemito(id)) {
-        cout << " Ya existe un remito con ese ID.\n"; pausar(); return;
-    }
-    int d = leerEntero("Dia: ", false);
-    int m = leerEntero("Mes: ", false);
-    int y = leerEntero("Año: ", false);
+    int id = ++ultimoIdRemito;
+    cout << "(ID de remito asignado automaticamente: " << id << ")\n";
+    int d = InputUtils::leerEntero("Dia: ", false);
+    int m = InputUtils::leerEntero("Mes: ", false);
+    int y = InputUtils::leerEntero("Año: ", false);
 
     Remito* r = nullptr;
     try {
         r = new RemitoSalida(id, Fecha(d,m,y));
     } catch (...) {
-        cout << "[ERROR] No se pudo crear el remito.\n"; pausar(); return;
+        cout << "[ERROR] No se pudo crear el remito.\n"; InputUtils::pausar(); return;
     }
+
+    cout << "\nProductos disponibles (codigo - nombre - stock):\n";
+    inventario.mostrarProductos();
 
     while (true) {
         cout << "\n1) Agregar detalle\n2) Finalizar remito\n";
-        int op = leerEntero("Opcion: ");
+        int op = InputUtils::leerEntero("Opcion: ");
         if (op == 2) break;
         if (op != 1) { cout << " Opcion invalida.\n"; continue; }
 
-        int cod = leerEntero("Codigo de producto: ", false);
+        int cod = InputUtils::leerEntero("Codigo de producto: ", false);
         Producto* p = inventario.buscarProducto(cod);
         if (!p) { cout << " Producto inexistente.\n"; continue; }
-        int cant = leerEntero("Cantidad (>=1): ", false);
+        int cant = InputUtils::leerEntero("Cantidad (>=1): ", false);
         if (cant <= 0) { cout << " Cantidad invalida.\n"; continue; }
-        if (!validarStockSalida(inventario, cod, cant)) {
-            cout << " Stock insuficiente para el producto '" << p->getNombre()
+        if (!validarStockSalidaLocal(inventario, cod, cant)) {
+            cout << " Stock insuficiente para '" << p->getNombre()
                  << "'. Stock actual: " << p->getStock() << "\n";
             continue;
         }
@@ -558,46 +397,19 @@ void Sistema::opRegistrarRemitoSalida() {
     }
 
     try {
-        gestorTransacciones.registrarRemito(r, inventario); // actualiza stock
+        gestorTransacciones.registrarRemito(r, inventario); // actualiza stock (resta)
         cout << " Remito de salida registrado.\n";
-        guardarDatos();
+        guardarTodos();
     } catch (const exception& e) {
         cout << "[ERROR] " << e.what() << "\n";
         delete r;
     }
-    pausar();
+    InputUtils::pausar();
 }
 
-void Sistema::opMostrarRemitos() const {
-    limpiarPantalla();
+void Sistema::operacionMostrarRemitos() const {
+    InputUtils::limpiarPantalla();
     cout << "=== Lista de Remitos ===\n";
     gestorTransacciones.mostrarRemitos();
     cout << "\n";
-}
-
-void Sistema::menuTransacciones() {
-    while (true) {
-        limpiarPantalla();
-        cout << "====== Gestionar Transacciones ======\n";
-        cout << "1) Registrar Remito de Entrada\n";
-        cout << "2) Registrar Remito de Salida\n";
-        cout << "3) Mostrar lista de Remitos\n";
-        cout << "4) Volver\n";
-        cout << "=====================================\n";
-        int op = leerEntero("Opcion: ");
-        switch (op) {
-            case 1: opRegistrarRemitoEntrada(); break;
-            case 2: opRegistrarRemitoSalida(); break;
-            case 3: opMostrarRemitos(); pausar(); break;
-            case 4: return;
-            default: cout << " Opcion invalida.\n"; pausar();
-        }
-    }
-}
-
-// ======================
-// Ejecución
-// ======================
-void Sistema::ejecutar() {
-    menuPrincipal();
 }

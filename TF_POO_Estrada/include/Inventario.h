@@ -4,8 +4,11 @@
 #include <vector>
 #include "Producto.h"
 #include "GestorProveedores.h"
+#include "ProductosStore.h"
 
 using namespace std;
+
+class GestorProveedores;
 
 // ===================
 // Declaracion Inventario
@@ -13,9 +16,11 @@ using namespace std;
 class Inventario {
 private:
     vector<Producto*> productos; // lista de productos disponibles
+    IProductosStore* store; // estrategia de persistencia
 
 public:
-    Inventario();
+    //Constructor y destructor
+    Inventario(IProductosStore* s);
     ~Inventario();
 
     // Gestión de productos
@@ -30,7 +35,11 @@ public:
     // Obtención de productos
     const vector<Producto*>& getProductos() const;
     vector<Producto*> getProductosStockBajo() const;
-    void vaciarInventario(); // borra todos los productos
+
+    // Operaciones de persistencia
+    void setEstrategia(IProductosStore* str);
+    void guardar();
+    void cargar();
 
     // Mostrar información
     void mostrarProductos() const;

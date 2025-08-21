@@ -1,7 +1,7 @@
 #include "Inventario.h"
 #include <iostream>
 
-Inventario::Inventario() {}
+Inventario::Inventario(IProductosStore* s) : store(s) {}
 
 Inventario::~Inventario() {
     for (auto p : productos) delete p;
@@ -63,12 +63,15 @@ vector<Producto*> Inventario::getProductosStockBajo() const {
     return bajos;
 }
 
-void Inventario::vaciarInventario() {
-    for (Producto* p : productos)
-        delete p;
-    productos.clear();
+void Inventario::setEstrategia(IProductosStore* str) { store = str; }
+
+void Inventario::guardar() {
+    if(store) store->guardar(productos);
 }
 
+void Inventario::cargar() {
+    if(store) productos = store->cargar();
+}
 
 void Inventario::mostrarProductos() const {
     for (auto p : productos) p->mostrarInfo();

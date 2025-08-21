@@ -17,8 +17,7 @@ void Fecha::setDay(int d) { day = d; }
 void Fecha::setMonth(int m) { month = m; }
 void Fecha::setYear(int y) { year = y; }
 
-string Fecha::toString() const {
-    char buffer[20];
-    sprintf(buffer, "%02d/%02d/%04d", day, month, year);
-    return string(buffer);
+ostream& operator<<(ostream& os, const Fecha& f){
+    os << f.getDay() << "/" << f.getMonth() << "/" << f.getYear();
+    return os;
 }

@@ -40,7 +40,6 @@ public:
     void setUmbralStockBajo(int nuevoUmbralStockBajo);
 
     virtual void mostrarInfo() const = 0;
-
 };
 
 
@@ -68,7 +67,6 @@ public:
     void setEsFresco(bool nuevoEsFresco);
 
     virtual void mostrarInfo() const override;
-
 };
 
 
@@ -96,7 +94,6 @@ public:
     void setVoltaje(int nuevoVoltaje);
 
     virtual void mostrarInfo() const override;
-
 };
 
 
@@ -107,7 +104,7 @@ public:
 class ProductoLimpieza : public Producto{
 private:
     string fechaVencimiento;
-    string superficieUso; //Cocina, Piso, Cuero, Madera, Ropa...
+    string superficieUso; //Cocina, Piso, Cuero, Madera, Ropa, Ambiente...
     bool esToxico; //true = SI , false = NO
 
 public:
@@ -127,7 +124,6 @@ public:
     void setEsToxico(bool nuevoEsFresco);
 
     virtual void mostrarInfo() const override;
-
 };
 
 #endif // PRODUCTO_H
